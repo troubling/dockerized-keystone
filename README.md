@@ -16,7 +16,6 @@ In order to run swift functional tests with this keystone, you will need to make
 12c13,14
 < pipeline = catch_errors gatekeeper healthcheck proxy-logging cache bulk tempurl ratelimit crossdomain container_sync tempauth staticweb copy container-quotas account-quotas slo dlo versioned_writes proxy-logging proxy-server
 ---
-> #pipeline = catch_errors gatekeeper healthcheck proxy-logging cache bulk tempurl ratelimit crossdomain container_sync tempauth staticweb copy container-quotas account-quotas slo dlo versioned_writes proxy-logging proxy-server
 > pipeline = catch_errors gatekeeper healthcheck proxy-logging cache bulk tempurl ratelimit crossdomain container_sync authtoken keystoneauth staticweb copy container-quotas account-quotas slo dlo versioned_writes proxy-logging proxy-server
 72a75
 > object_post_as_copy = true
