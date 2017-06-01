@@ -1,3 +1,5 @@
+all: bootstrap
+
 build: ## build a keystone docker image
 	docker build -t keystone .
 

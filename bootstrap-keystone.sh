@@ -16,10 +16,7 @@ keystone-manage bootstrap \
 
 service keystone start
 
-virtualenv .venv
-. .venv/bin/activate
-
-pip install python-openstackclient
+sleep 5
 
 export OS_USERNAME=admin
 export OS_PASSWORD=password
@@ -30,7 +27,6 @@ export OS_AUTH_URL=http://127.0.0.1:5000/v3
 export OS_IDENTITY_API_VERSION=3
 export OS_AUTH_VERSION=3
 
-openstack role create swift-user
 openstack role create SwiftOperator
 openstack role create ResellerAdmin
 openstack role create service
