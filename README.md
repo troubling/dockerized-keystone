@@ -10,7 +10,7 @@ You can use `docker logs -f keystone` to check on bootstrap progress
 
 In order to run swift functional tests with this keystone, you will need to make following changes:
 
-`
+```
 diff swift/doc/saio/swift/proxy-server.conf /etc/swift/proxy-server.conf
 > tempauth_enabled = false
 12c13,14
@@ -42,9 +42,9 @@ diff swift/doc/saio/swift/proxy-server.conf /etc/swift/proxy-server.conf
 > operator_roles = admin, swiftoperator
 > reseller_admin_role = ResellerAdmin
 > GLANCE_service_roles = service
-`
+```
 
-`diff swift/test/sample.conf /etc/swift/test.conf
+```diff swift/test/sample.conf /etc/swift/test.conf
 3,6c3,6
 < auth_host = 127.0.0.1
 < auth_port = 8080
@@ -97,5 +97,5 @@ diff swift/doc/saio/swift/proxy-server.conf /etc/swift/proxy-server.conf
 > account6 = test
 > username6 = tester6
 > password6 = testing6
-`
+```
 
