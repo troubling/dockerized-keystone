@@ -14,7 +14,7 @@ build-mysql:
 
 kill: ## kill the docker images
 	docker ps | grep keystone | awk '{ print $$1 }' | xargs docker kill > /dev/null
-	docker ps -a | grep keystone | awk '{ print $$1 }' | xargs docker rm > /dev/null
+	docker ps -a | grep keystone | awk '{ print $$1 }' | xargs docker rm -v > /dev/null
 
 bash: ## run interactive bash in the keystone image
 	docker exec -it keystone /bin/bash
