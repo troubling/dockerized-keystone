@@ -1,5 +1,18 @@
 #!/bin/bash
 
+HTTPS_ENABLED=${HTTPS_ENABLED:-false}
+if $HTTPS_ENABLED; then
+    HTTP="https"
+    CN=${CN:-$HOSTNAME}
+    # generate keystone ssl certs.
+    mkdir -p /etc/apache2/ssl
+    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+        -keyout /etc/apache2/ssl/keystone.key -out /etc/apache2/ssl/keystone.crt \
+        -subj "/C=$COUNTRY/ST=$STATE/L=$LOCALITY/O=$ORG/OU=$ORG_UNIT/CN=$CN"
+else
+    HTTP="http"
+fi
+
 keystone-manage db_sync
 
 keystone-manage bootstrap \
@@ -9,23 +22,38 @@ keystone-manage bootstrap \
     --bootstrap-role-name admin \
     --bootstrap-service-name keystone \
     --bootstrap-region-id RegionOne \
-    --bootstrap-admin-url http://localhost:35357 \
-    --bootstrap-public-url http://localhost:5000 \
-    --bootstrap-internal-url http://localhost:5000
+    --bootstrap-admin-url "$HTTP://$HOSTNAME:35357/v3" \
+    --bootstrap-public-url "$HTTP://$HOSTNAME:5000/v3" \
+    --bootstrap-internal-url "$HTTP://$HOSTNAME:5000/v3"
 
-
-service keystone start
-
-sleep 5
 
 export OS_USERNAME=admin
 export OS_PASSWORD=password
 export OS_PROJECT_NAME=admin
 export OS_TENANT_NAME=admin
-export OS_AUTH_URL=http://127.0.0.1:5000/v3
+export OS_AUTH_URL=$HTTP://${HOSTNAME}:5000/v3
 
 export OS_IDENTITY_API_VERSION=3
 export OS_AUTH_VERSION=3
+
+
+echo "ServerName $HOSTNAME" >> /etc/apache2/apache2.conf
+
+if $HTTPS_ENABLED; then
+export OS_CACERT=/etc/apache2/ssl/keystone.crt
+a2enmod ssl
+sed -i '/<VirtualHost/a \
+    SSLEngine on \
+    SSLCertificateFile /etc/apache2/ssl/keystone.crt \
+    SSLCertificateKeyFile /etc/apache2/ssl/keystone.key \
+    ' /etc/apache2/sites-available/keystone.conf
+fi
+
+a2ensite keystone
+
+service apache2 restart
+
+sleep 5
 
 openstack role create SwiftOperator
 openstack role create ResellerAdmin
@@ -34,9 +62,9 @@ openstack role create _member_
 
 openstack service create --name swift --description "Swift Object Storage Service" object-store
 
-openstack endpoint create --region RegionOne swift public "http://127.0.0.1:8080/v1/AUTH_\$(tenant_id)s"
-openstack endpoint create --region RegionOne swift internal "http://127.0.0.1:8080/v1/AUTH_\$(tenant_id)s"
-openstack endpoint create --region RegionOne swift admin "http://127.0.0.1:8080/v1"
+openstack endpoint create --region RegionOne swift public "$HTTP://127.0.0.1:8080/v1/AUTH_\$(tenant_id)s"
+openstack endpoint create --region RegionOne swift internal "$HTTP://127.0.0.1:8080/v1/AUTH_\$(tenant_id)s"
+openstack endpoint create --region RegionOne swift admin "$HTTP://127.0.0.1:8080/v1"
 
 
 openstack project create service
