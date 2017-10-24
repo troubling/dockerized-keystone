@@ -3,7 +3,17 @@ Keystone Docker instance for Hummingbird/Swift SAIO
 
 This helps to run [Keystone](https://github.com/openstack/keystone) in a container which you can spin up & down for Hummingbird/Swift SAIO.
 
-Just use `make bootstrap` to build & run keystone container.
+You can run Keystone with http(default) or https( -e HTTPS_ENABLED=true)
+
+For HTTP:
+Just use `make bootstrap` to build & run keystone container in http mode.
+
+For HTTPS:
+Use `make bootstrap-ssl` to build & run keystone container in https mode.
+`make bootstrap-ssl` also generate ssl cert & key in `$pwd/ssl` directory.
+You can pass this keystone ssl cert(`$pwd/ssl/keystone.crt`) to make https requests to Keystone.
+
+You can provide hostname with `-h {hostname}` with docker run.
 
 You can use `docker logs -f keystone` to check on bootstrap progress
 
