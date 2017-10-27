@@ -67,17 +67,17 @@ openstack endpoint create --region RegionOne swift internal "$HTTP://127.0.0.1:8
 openstack endpoint create --region RegionOne swift admin "$HTTP://127.0.0.1:8080/v1"
 
 
-openstack project create service
+openstack project create service  --domain default
 
 openstack user create --domain default --password password  --project service swift
 openstack role add --project service --user swift admin
 
-openstack project create test
+openstack project create test  --domain default
 
 openstack user create --domain default --password testing --project test tester
 openstack role add --project test --user tester admin
 
-openstack project create test2
+openstack project create test2  --domain default
 
 openstack user create --domain default --password testing2 --project test tester2
 openstack role add --project test2 --user tester2 admin

@@ -11,7 +11,7 @@ apt-get install -y \
     apache2 \
     libapache2-mod-wsgi
 
-RUN sed -e 's/connection = sqlite:\/\/\/\/var\/lib\/keystone\/keystone.db/connection = mysql:\/\/root:password@mysql\/keystone/g'  \
+RUN sed -e 's/connection = sqlite:\/\/\/\/var\/lib\/keystone\/keystone.db/connection = mysql+pymysql:\/\/root:password@mysql\/keystone/g'  \
 -e 's/^\[token\]$/\[token\]\n\nexpiration = 604800\nprovider = uuid/g' \
 -e 's/#min_pool_size = 1/min_pool_size = 5/g' \
 -e 's/#max_pool_size = 5/max_pool_size = 15/g' \
