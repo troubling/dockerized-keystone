@@ -5,10 +5,10 @@ This helps to run [Keystone](https://github.com/openstack/keystone) in a contain
 
 You can run Keystone with http(default) or https( -e HTTPS_ENABLED=true)
 
-For HTTP:
+## For HTTP:
 Just use `make bootstrap` to build & run keystone container in http mode.
 
-For HTTPS:
+## For HTTPS:
 In order to run keystone with TLS, you need to supply certificate, key and ca bundle.
 
 It expects following files to be present:
