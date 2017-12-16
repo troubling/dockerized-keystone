@@ -4,11 +4,6 @@ HTTPS_ENABLED=${HTTPS_ENABLED:-false}
 if $HTTPS_ENABLED; then
     HTTP="https"
     CN=${CN:-$HOSTNAME}
-    # generate keystone ssl certs.
-    mkdir -p /etc/apache2/ssl
-    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
-        -keyout /etc/apache2/ssl/keystone.key -out /etc/apache2/ssl/keystone.crt \
-        -subj "/C=$COUNTRY/ST=$STATE/L=$LOCALITY/O=$ORG/OU=$ORG_UNIT/CN=$CN"
 else
     HTTP="http"
 fi
@@ -40,7 +35,7 @@ export OS_AUTH_VERSION=3
 echo "ServerName $HOSTNAME" >> /etc/apache2/apache2.conf
 
 if $HTTPS_ENABLED; then
-export OS_CACERT=/etc/apache2/ssl/keystone.crt
+export OS_CACERT=/etc/apache2/ssl/ca.crt
 a2enmod ssl
 sed -i '/<VirtualHost/a \
     SSLEngine on \

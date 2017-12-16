@@ -9,9 +9,16 @@ For HTTP:
 Just use `make bootstrap` to build & run keystone container in http mode.
 
 For HTTPS:
-Use `make bootstrap-ssl` to build & run keystone container in https mode.
-`make bootstrap-ssl` also generate ssl cert & key in `$pwd/ssl` directory.
-You can pass this keystone ssl cert(`$pwd/ssl/keystone.crt`) to make https requests to Keystone.
+In order to run keystone with TLS, you need to supply certificate, key and ca bundle.
+
+It expects following files to be present:
+```
+$pwd/ssl/keystone.crt
+$pwd/ssl/keystone.key
+$pwd/ssl/ca.crt
+```
+
+Now run `make bootstrap-ssl` to build & run keystone container in https mode.
 
 You can provide hostname with `-h {hostname}` with docker run.
 
