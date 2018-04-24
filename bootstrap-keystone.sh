@@ -55,12 +55,18 @@ openstack role create ResellerAdmin
 openstack role create service
 openstack role create _member_
 
-openstack service create --name swift --description "Swift Object Storage Service" object-store
-
-openstack endpoint create --region RegionOne swift public "$HTTP://127.0.0.1:8080/v1/AUTH_\$(tenant_id)s"
-openstack endpoint create --region RegionOne swift internal "$HTTP://127.0.0.1:8080/v1/AUTH_\$(tenant_id)s"
-openstack endpoint create --region RegionOne swift admin "$HTTP://127.0.0.1:8080/v1"
-
+if [[ -z `openstack service show swift` ]] ; then
+    openstack service create --name swift --description "Swift Object Storage Service" object-store ;
+fi
+if [[ -z `openstack endpoint list --service swift --interface public --region RegionOne` ]] ; then
+    openstack endpoint create --region RegionOne swift public "$HTTP://127.0.0.1:8080/v1/AUTH_\$(tenant_id)s" ;
+fi
+if [[ -z `openstack endpoint list --service swift --interface internal --region RegionOne` ]] ; then
+    openstack endpoint create --region RegionOne swift internal "$HTTP://127.0.0.1:8080/v1/AUTH_\$(tenant_id)s" ;
+fi
+if [[ -z `openstack endpoint list --service swift --interface admin --region RegionOne` ]] ; then
+    openstack endpoint create --region RegionOne swift admin "$HTTP://127.0.0.1:8080/v1" ;
+fi
 
 openstack project create service  --domain default
 

@@ -5,7 +5,7 @@ build: ## build a keystone docker image
 
 run: ## run the keystone docker image, linked to mysql
 	docker run -t -d -h 127.0.0.1 --link mysql:mysql -p 0.0.0.0:35357:35357 -p 0.0.0.0:5000:5000 \
-      -v /etc/localtime:/etc/localtime --name keystone keystone
+      -v /etc/localtime:/etc/localtime --restart unless-stopped --name keystone keystone
 
 ssl-run: ## run the keystone docker image, linked to mysql
 	mkdir -p ./ssl
@@ -14,10 +14,16 @@ ssl-run: ## run the keystone docker image, linked to mysql
 	--name keystone keystone
 
 run-mysql:
-	docker run -d --name mysql --ulimit nofile=65536:65536 keystone-mysql --max-connections=500
+	docker run -d --name mysql --restart unless-stopped --ulimit nofile=65536:65536 keystone-mysql --max-connections=500
 
 build-mysql:
 	docker build -t keystone-mysql -f Dockerfile.mysql .
+
+restart:
+	docker start mysql && docker start keystone
+
+stop:
+	docker ps | grep keystone | awk '{ print $$1 }' | xargs docker stop
 
 kill: ## kill the docker images
 	docker ps | grep keystone | awk '{ print $$1 }' | xargs docker kill > /dev/null
